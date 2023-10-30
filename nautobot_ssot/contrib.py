@@ -91,7 +91,7 @@ class NautobotAdapter(DiffSync):
             metadata_for_this_field = getattr(type_hints[parameter_name], "__metadata__", [])
             for metadata in metadata_for_this_field:
                 if isinstance(metadata, CustomFieldAnnotation):
-                    parameters[parameter_name] = database_object.cf[metadata.name]
+                    parameters[parameter_name] = database_object.cf.get(metadata.name, None)
                     is_custom_field = True
                     break
             if is_custom_field:
@@ -333,7 +333,10 @@ class NautobotModel(DiffSyncModel):
             metadata_for_this_field = getattr(type_hints[field], "__metadata__", [])
             for metadata in metadata_for_this_field:
                 if isinstance(metadata, CustomFieldAnnotation):
-                    obj.cf[metadata.name] = value
+                    if value is not None:
+                        obj.cf[metadata.name] = value
+                    elif value is None and metadata.name in obj.cf:
+                        obj.cf.pop(metadata.name)
                     is_custom_field = True
                     continue
             if is_custom_field:
