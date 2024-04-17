@@ -22,6 +22,7 @@ class PlaceholderAPITest(TestCase):
 
     def test_placeholder(self):
         """Verify that devices can be listed."""
+        self.fail()
         url = reverse("dcim-api:device-list")
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
